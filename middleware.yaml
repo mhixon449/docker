@@ -1,0 +1,37 @@
+version: "3.6"
+services:
+
+######### MIDDLEWARE ##########
+
+  # nzbhydra2 - nzb indexer aggregator
+  hydra2:
+    image: linuxserver/hydra2
+    container_name: hydra2
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - /opt/conf/hydra/config:/config
+      - /opt/conf/hydra/downloads:/downloads
+      - /opt/conf/hydra/shared:/shared
+    ports:
+      - 5076:5076
+    restart: unless-stopped
+
+   # Jackett – Torrent Proxy
+  jackett:
+    image: "linuxserver/jackett"
+    hostname: jackett
+    container_name: "jackett"
+    volumes:
+      - /opt/conf/jackett/config:/config
+      - /opt/conf/jackett/downloads:/downloads
+      - /opt/conf/jackett/shared:/shared
+    ports:
+      - "9117:9117"
+    restart: always
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America_Los_Angeles

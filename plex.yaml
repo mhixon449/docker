@@ -1,0 +1,70 @@
+version: "3.6"
+services:
+
+######### MANAGEMENT ##########
+
+ # Plexmediaserver - let friends and family leech your bandwidth
+  plex:
+    container_name: plex
+    hostname: plex
+    network_mode: host
+    restart: unless-stopped
+    image: plexinc/pms-docker:public # change this to plexinc/pms-docker:plexpass if you are a plexpass subscriber
+    volumes:
+      - ~/plex/plex:/config
+      - ~/plex/plex-tmp:/transcode # Added this to keep image small
+      - /mnt/synology:/data # Changed this so you can add other libraries simply
+      - /usr/share/zoneinfo/America/Los_Angeles:/etc/localtime:ro
+    ports:
+      - 32400:32400
+      - 32400:32400/udp
+      - 3005:3005
+      - 8324:8324
+      - 32469:32469
+      - 32469:32469/udp
+      - 1900:1900
+      - 1900:1900/udp
+      - 32410:32410
+      - 32410:32410/udp
+      - 32412:32412
+      - 32412:32412/udp
+      - 32413:32413
+      - 32413:32413/udp
+      - 32414:32414
+      - 32414:32414/udp
+    environment:
+      - PLEX_UID=0 # Make this the uid of your user account (type "id" in terminal and look for uid=xxxx)
+      - PLEX_GID=0 # Make this the gid of your user account (type "id" in terminal and look for gid=xxxx)
+      - ADVERTISE_IP="http://192.168.1.3:32400/"
+      - TZ=America/Los_Angeles
+        #      - ALLOWED_NETWORKS="192.168.1.3/24"
+      - PLEX_CLAIM="claim-xSdzYG2dHAZ4REEgqFyH" # Visit https://www.plex.tv/claim to get your claim token
+
+ # ombi - plex requests
+  ombi:
+    container_name: ombi
+    image: rogueosb/ombi
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - TZ=America/Los_Angeles
+      - PUID=1000
+      - PGID=1000
+    volumes:
+      - /opt/conf/ombi:/config
+
+
+  # tautulli (PlexPy) - Plex stats
+  tautulli:
+    image: linuxserver/tautulli
+    container_name: tautulli
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
+    volumes:
+      - /opt/conf/plexpy:/config
+      - /opt/conf/plexpy/logs/:/logs
+    ports:
+      - 8181:8181
+    restart: unless-stopped

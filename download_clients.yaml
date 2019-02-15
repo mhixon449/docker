@@ -1,0 +1,36 @@
+version: "3.6"
+services:
+
+######### DOWNLOAD CLIENTS ##########
+
+  # sabnzbd - .nzb download daemon
+  sabnzbd:
+    image: linuxserver/sabnzbd:latest
+    container_name: sabnzbd
+    env_file: uidgid.env
+    volumes:
+      - /opt/conf/sabnzbd/incomplete:/incomplete-downloads
+      - /opt/conf/sabnzbd/:/config
+      - /opt/conf/sabnzbd/downloads:/downloads
+    ports:
+      - 8080:8080
+    environment:
+      - EDGE=1
+      - VIRTUAL_HOST=sabnzbd.hixon.io
+      - VIRTUAL_PORT=8080
+    restart: always
+
+   # deluge - Torrent daemon
+  deluge:
+    image: linuxserver/deluge:latest
+    container_name: deluge
+    restart: always
+    ports:
+      - 8112:8112
+    volumes:
+      - /opt/conf/deluge/config:/config
+      - /opt/conf/deluge/downloads:/downloads
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles

@@ -1,0 +1,44 @@
+version: "3.6"
+services:
+
+######### MEDIA MANAGEMENT ##########
+
+ # sonarr - tv series management
+   sonarr:
+    hostname: sonarr
+    image: linuxserver/sonarr:latest
+    container_name: sonarr
+    ports:
+      - 8989:8989
+    dns:
+      - 127.0.0.1
+      - 8.8.8.8
+    restart: always
+    volumes:
+      - /opt/conf/sonarr:/config
+      - /mnt/synology/TV/:/tv
+      - /opt/conf/sabnzbd/downloads:/downloads
+    environment:
+      - PUID=0
+      - GUID=0
+      - TZ=America/Los_Angeles
+
+ # radarr - movie management
+  radarr:
+    hostname: radarr
+    container_name: radarr
+    image: linuxserver/radarr:latest
+    ports:
+      - 7878:7878
+    dns:
+      - 127.0.0.1
+      - 8.8.8.8
+    restart: always
+    volumes:
+      - /opt/conf/radarr:/config
+      - /opt/conf/sabnzbd/downloads:/downloads
+      - /mnt/synology/Movies:/movies
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=America/Los_Angeles
