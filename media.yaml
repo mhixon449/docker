@@ -4,7 +4,7 @@ services:
 ######### MEDIA MANAGEMENT ##########
 
  # sonarr - tv series management
-   sonarr:
+  sonarr:
     hostname: sonarr
     image: linuxserver/sonarr:latest
     container_name: sonarr

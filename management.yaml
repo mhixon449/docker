@@ -3,22 +3,6 @@ services:
 
 ######### MANAGEMENT ##########
 
- # portainer - docker management
-  portainer:
-    image: portainer/portainer
-    hostname: portainer
-    container_name: portainer
-    restart: always
-    command: -H unix:///var/run/docker.sock
-    ports:
-      - "9000:9000"
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /opt/conf/portainer/data:/data
-      - /opt/conf/portainer/shared/:/shared
-    environment:
-      - TZ=America/Los_Angeles
-
  # organizr - muxer WebUI
   organizr:
     image: organizrtools/organizr-v2
@@ -63,13 +47,17 @@ services:
       - '/var/log/pihole.log:/var/log/pihole.log'
     restart: always
 
- # watchtower - automagically update containers
-  watchtower:
-    container_name: watchtower
-    hostname: watchtower
-    restart: always
-    image: v2tec/watchtower
+ # ouroboros - automagically update containers
+  ouroboros:
+    container_name: ouroboros
+    hostname: ouroboros
+    image: pyouroboros/ouroboros
+    environment:
+      - CLEANUP=true
+      - INTERVAL=300
+      - LOG_LEVEL=info
+      - SELF_UPDATE=true
+      - TZ=America/Los_Angeles
+    restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    command: --schedule "0 0 4 * * *" --cleanup
-
