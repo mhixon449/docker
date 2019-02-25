@@ -22,6 +22,12 @@ services:
       - PUID=0
       - GUID=0
       - TZ=America/Los_Angeles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8989"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
  # radarr - movie management
   radarr:
@@ -42,3 +48,9 @@ services:
       - PUID=0
       - PGID=0
       - TZ=America/Los_Angeles
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:7878"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

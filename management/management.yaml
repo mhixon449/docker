@@ -16,6 +16,12 @@ services:
     ports:
       - 81:80
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
  # pi-hole - DNS service
   pihole:
@@ -39,13 +45,19 @@ services:
     extra_hosts:
       - 'pihole.hixon.io:192.168.1.3'
     volumes:
-      - /etc/pihole/:/etc/pihole/
-      - /opt/conf/pihole/lighthttpd.conf:/etc/lighthttpd/lighthttpd.conf
-      - /etc/resolv.conf:/etc/resolv.conf
+            #      - /etc/pihole/:/etc/pihole/
+            # - /opt/conf/pihole/:/etc/lighttpd/
+        #     - /etc/resolv.conf:/etc/resolv.conf
       # WARNING: if this log don't exist as a file on the host already
       # docker will try to create a directory in it's place making for lots of errors
       - '/var/log/pihole.log:/var/log/pihole.log'
     restart: always
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:80"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
  # ouroboros - automagically update containers
   ouroboros:
@@ -58,6 +70,7 @@ services:
       - LOG_LEVEL=info
       - SELF_UPDATE=true
       - TZ=America/Los_Angeles
+      - DOCKER_SOCKETS="unix://var/run/docker.sock tcp://192.168.1.246:2375"
     restart: unless-stopped
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  portainer:
+    image: portainer/portainer
+    restart: always
+    container_name: "portainer"
+    ports:
+      - 9000:9000 
+#Automatically choose 'Manage the Docker instance where Portainer is running' by adding <--host=unix:///var/run/docker.sock> to the command
+    command: --templates http://templates/templates.json --host=unix:///var/run/docker.sock --admin-password portainer
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock 
+      - /opt/conf/portainer/data:/data

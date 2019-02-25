@@ -39,6 +39,12 @@ services:
       - TZ=America/Los_Angeles
         #      - ALLOWED_NETWORKS="192.168.1.3/24"
       - PLEX_CLAIM="claim-xSdzYG2dHAZ4REEgqFyH" # Visit https://www.plex.tv/claim to get your claim token
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:32400/identity"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
  # ombi - plex requests
   ombi:
@@ -52,6 +58,12 @@ services:
       - PGID=1000
     volumes:
       - /opt/conf/ombi:/config
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3579"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
 
 
   # tautulli (PlexPy) - Plex stats
@@ -68,3 +80,9 @@ services:
     ports:
       - 8181:8181
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8181"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
